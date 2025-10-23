@@ -21,8 +21,6 @@ struct termios oldtio; // Serial port settings to restore on closing
 // Returns -1 on error.
 int openSerialPort(const char *serialPort, int baudRate)
 {
-    // Open with O_NONBLOCK to avoid hanging when CLOCAL
-    // is not yet set on the serial port (changed later)
     int oflags = O_RDWR | O_NOCTTY | O_NONBLOCK;
     fd = open(serialPort, oflags);
     if (fd < 0)

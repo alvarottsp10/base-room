@@ -1,0 +1,19 @@
+# Sempre que quiser testar:
+cd ~/Desktop/base-room/lab1-code-25-26
+
+# Compilar
+make clean
+make
+gcc -Wall -o bin/cable cable/cable.c
+
+# Terminal 1
+sudo ./bin/cable
+
+# Terminal 2
+./bin/main /dev/ttyS11 9600 rx penguin-received.gif
+
+# Terminal 3
+./bin/main /dev/ttyS10 9600 tx penguin.gif
+
+# Verificar
+diff -s penguin.gif penguin-received.gif

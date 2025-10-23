@@ -314,7 +314,7 @@ int sendInformationFrame(const unsigned char *data, int dataSize, int frameNum)
 {
     // Build frame (without stuffing)
     unsigned char frameBeforeStuffing[MAX_PAYLOAD_SIZE * 2 + 10];
-    int frameSizeBeforeStuffing = buildInformationFrame(frameBeforeStuffing, data, dataSize, frameNum);
+    buildInformationFrame(frameBeforeStuffing, data, dataSize, frameNum);
     
     // Apply byte stuffing to data field + BCC2 (not to header or flags)
     unsigned char frameAfterStuffing[MAX_PAYLOAD_SIZE * 2 + 10];

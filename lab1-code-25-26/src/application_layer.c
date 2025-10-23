@@ -21,9 +21,6 @@
 // Maximum data per packet (should fit in MAX_PAYLOAD_SIZE)
 #define MAX_DATA_SIZE 1000
 
-////////////////////////////////////////////////
-// AUXILIARY FUNCTIONS
-////////////////////////////////////////////////
 
 // Build control packet (START or END)
 int buildControlPacket(unsigned char *packet, unsigned char ctrl, 
