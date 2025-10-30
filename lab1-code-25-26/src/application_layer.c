@@ -19,7 +19,7 @@
 #define TLV_FILENAME 0x01
 
 // Maximum data per packet (should fit in MAX_PAYLOAD_SIZE)
-#define MAX_DATA_SIZE 1000
+#define MAX_DATA_SIZE 997
 
 
 // Build control packet (START or END)
