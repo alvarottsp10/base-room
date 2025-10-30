@@ -7,6 +7,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <string.h>
+#include <errno.h>
 
 // MISC
 #define _POSIX_SOURCE 1 // POSIX compliant source
@@ -201,6 +202,17 @@ int receiveSupervisionFrame(unsigned char expectedAddr, unsigned char expectedCt
         
         if (bytesRead < 0)
         {
+            // Check if interrupted by signal (alarm)
+            if (errno == EINTR)
+            {
+                // Check if it was our timeout alarm
+                if (timeoutOccurred)
+                {
+                    return 1; // Timeout occurred
+                }
+                // Other interruption, continue reading
+                continue;
+            }
             perror("Error reading byte");
             return -1;
         }
@@ -368,6 +380,15 @@ int receiveInformationFrame(unsigned char *data, int *dataSize, int expectedFram
         
         if (bytesRead < 0)
         {
+            // Check if interrupted by signal
+            if (errno == EINTR)
+            {
+                if (timeoutOccurred)
+                {
+                    return 1;
+                }
+                continue;
+            }
             perror("Error reading byte");
             return -1;
         }
@@ -667,6 +688,14 @@ int llwrite(const unsigned char *buf, int bufSize)
             
             if (bytesRead < 0)
             {
+                if (errno == EINTR)
+                {
+                    if (timeoutOccurred)
+                    {
+                        break;
+                    }
+                    continue;
+                }
                 perror("Error reading response");
                 alarm(0);
                 return -1;
@@ -841,6 +870,7 @@ int llclose()
             }
             else if (result == 1)
             {
+                printf("Timeout waiting for DISC, retrying...\n");
                 attempts++;
             }
             else
