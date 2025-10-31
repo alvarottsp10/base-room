@@ -681,6 +681,7 @@ int llwrite(const unsigned char *buf, int bufSize)
         unsigned char ctrl = 0;
         unsigned char bcc1 = 0;
         int responseReceived = FALSE;
+        int rejReceived = FALSE;  // ← NOVA FLAG
         
         while (!responseReceived && !timeoutOccurred)
         {
@@ -760,7 +761,8 @@ int llwrite(const unsigned char *buf, int bufSize)
                         else if (ctrl == rejCtrl)
                         {
                             printf("Received REJ%d - retransmitting\n", txFrameNumber);
-                            attempts++;
+                            rejReceived = TRUE;  // ← MARCAR QUE RECEBEU REJ
+                            // NÃO incrementar attempts!
                             break;
                         }
                     }
@@ -777,6 +779,14 @@ int llwrite(const unsigned char *buf, int bufSize)
         
         alarm(0);
         
+        // Se recebeu REJ, retransmitir imediatamente sem incrementar attempts
+        if (rejReceived)
+        {
+            // Apenas volta ao início do loop, reenvia o frame
+            continue;
+        }
+        
+        // Se foi timeout, incrementar attempts
         if (timeoutOccurred)
         {
             printf("Timeout waiting for response, retrying...\n");

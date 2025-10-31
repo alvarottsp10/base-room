@@ -13,7 +13,6 @@
 #define CTRL_DATA 0x02
 #define CTRL_START 0x01
 #define CTRL_END 0x03
-
 // TLV types
 #define TLV_FILESIZE 0x00
 #define TLV_FILENAME 0x01
@@ -323,9 +322,10 @@ void receiveFile(const char *outputFilename)
         
         if (packetSize < 0)
         {
-            printf("ERROR: Failed to receive packet\n");
-            fclose(file);
-            return;
+            // Error receiving packet (BCC2 error, etc.)
+            // llread already sent REJ, just wait for retransmission
+            printf("Waiting for retransmission...\n");
+            continue;  // ← CORREÇÃO CRÍTICA!
         }
         
         if (packetSize == 0)
